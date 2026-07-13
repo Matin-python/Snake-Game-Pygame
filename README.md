@@ -4,7 +4,6 @@ A classic Snake game built with Python and Pygame.
 
 The game includes multiple difficulty levels, a graphical menu, score tracking, custom sprites, and a game over screen with replay support.
 
----
 
 ## Features
 
@@ -21,21 +20,19 @@ The game includes multiple difficulty levels, a graphical menu, score tracking, 
 - 🏠 Return to Main Menu
 - ⌨️ WASD and Arrow key controls
 
----
 
 ## Technologies Used
 
 - Python
 - Pygame
 
----
 
 ## Project Structure
 
 ```
 Snake-Game-Pygame/
 │
-├── Snake.py
+├── snake.py
 ├── snake_head_U.jpg
 ├── snake_head_R.jpg
 ├── snake_head_D.jpg
@@ -49,7 +46,6 @@ Snake-Game-Pygame/
 └── README.md
 ```
 
----
 
 ## Installation
 
@@ -77,15 +73,13 @@ or
 pip install -r requirements.txt
 ```
 
----
 
 ## How to Run
 
 ```bash
-python Snake.py
+python snake.py
 ```
 
----
 
 ## Controls
 
@@ -96,7 +90,6 @@ python Snake.py
 | S / ↓ | Move Down |
 | D / → | Move Right |
 
----
 
 ## Gameplay
 
@@ -108,7 +101,6 @@ python Snake.py
    - Play Again
    - Return to the Main Menu
 
----
 
 ## Screenshots
 
@@ -130,8 +122,6 @@ Add screenshot here
 Add screenshot here
 ```
 
----
-
 ## Future Improvements
 
 - Snake body sprites instead of green rectangles
@@ -144,8 +134,16 @@ Add screenshot here
 - Better food spawning (aligned to the grid)
 - Animated snake movement
 
----
 
 ## License
 
 This project is licensed under the MIT License.
+
+
+## Author
+
+**Mohammad Reza Bakhshandeh**
+
+Electrical Engineering (Electronics) Graduate
+
+Interested in Python Development, Computer Vision, Machine Learning, Deep Learning, and Artificial Intelligence.
