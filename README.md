@@ -106,21 +106,16 @@ python snake.py
 
 ### Main Menu
 
-```
-Add screenshot here
-```
+![main menu](screenshots/menu.png)
 
 ### Gameplay
 
-```
-Add screenshot here
-```
+![game play](screenshots/gameplay.png)
+
 
 ### Game Over
 
-```
-Add screenshot here
-```
+![game over](screenshots/gameover.png)
 
 ## Future Improvements
 
