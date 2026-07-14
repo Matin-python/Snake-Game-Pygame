@@ -1,3 +1,12 @@
+"""
+Snake Game
+
+Author: Mohammad Reza Bakhshandeh
+Year: 2026
+
+A classic Snake game built with Python and Pygame.
+"""
+
 import pygame
 import random
 import os
@@ -28,9 +37,11 @@ ORANGE = (255, 165, 0)
 GRAY = (200, 200, 200)
 
 SCREEN_WIDTH = 800
-SCREEN_HIGHT = 640
+SCREEN_HEIGHT = 640
 
-SCREEN = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HIGHT))
+GRID_SIZE = 10
+
+SCREEN = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 
 # difficulty levels
@@ -47,6 +58,7 @@ DIRECTIONS = {
 }
 
 class Snake:
+    """Represents the player-controlled snake."""
     def __init__(self):
         self.size = 20
 
@@ -58,29 +70,30 @@ class Snake:
         self.snake_difficulty = 'easy'
 
         self.loc_x = SCREEN_WIDTH // 2
-        self.loc_y = SCREEN_HIGHT // 2
+        self.loc_y = SCREEN_HEIGHT // 2
 
         self.x_change = 0
         self.y_change = 0
 
-    def update(self, userInput):
-        if userInput[pygame.K_w] or userInput[pygame.K_UP]:
-            self.y_change = -10
+    def update(self, user_input):
+        """Update the snake's position based on keyboard input."""
+        if user_input[pygame.K_w] or user_input[pygame.K_UP]:
+            self.y_change = -GRID_SIZE
             self.x_change = 0
             self.snake_direction = DIRECTIONS["UP"]
 
-        if userInput[pygame.K_a] or userInput[pygame.K_LEFT]:
-            self.x_change = -10
+        if user_input[pygame.K_a] or user_input[pygame.K_LEFT]:
+            self.x_change = -GRID_SIZE
             self.y_change = 0
             self.snake_direction = DIRECTIONS["LEFT"]
 
-        if userInput[pygame.K_s] or userInput[pygame.K_DOWN]:
-            self.y_change = 10
+        if user_input[pygame.K_s] or user_input[pygame.K_DOWN]:
+            self.y_change = GRID_SIZE
             self.x_change = 0
             self.snake_direction = DIRECTIONS["DOWN"]
 
-        if userInput[pygame.K_d] or userInput[pygame.K_RIGHT]:
-            self.x_change = 10
+        if user_input[pygame.K_d] or user_input[pygame.K_RIGHT]:
+            self.x_change = GRID_SIZE
             self.y_change = 0
             self.snake_direction = DIRECTIONS["RIGHT"]
             
@@ -93,11 +106,11 @@ class Snake:
         if len(self.snake_loc) > self.snake_len:
             del self.snake_loc[0]
 
-    def eat(self, SCREEN, food):
+    def eat(self, food):
+        """Increase the snake length and score when food is collected."""
         snake_rect = pygame.Rect(self.snake_loc[-1][0], self.snake_loc[-1][1], self.size , self.size)
         rand_food = pygame.Rect(food.loc_x, food.loc_y, food.size, food.size)
         if snake_rect.colliderect(rand_food):
-            pygame.draw.rect(SCREEN, (255,20,20), snake_rect)
             food.update()
             self.snake_len += 1
             self.snake_score += 1
@@ -107,9 +120,9 @@ class Snake:
         draw_text("Score= " + str(self.snake_score), font, RED, 70, 20)
         draw_text("Difficulty= " + str(self.snake_difficulty), font, RED, SCREEN_WIDTH-100, 20)
         pygame.draw.line(SCREEN, RED, (0,40), (SCREEN_WIDTH,40), 5)
-        pygame.draw.line(SCREEN, RED, (0,40), (0, SCREEN_HIGHT), 5)
-        pygame.draw.line(SCREEN, RED, (SCREEN_WIDTH-2,40), (SCREEN_WIDTH-2,SCREEN_HIGHT), 5)
-        pygame.draw.line(SCREEN, RED, (0, SCREEN_HIGHT-2), (SCREEN_WIDTH,SCREEN_HIGHT-2), 5)
+        pygame.draw.line(SCREEN, RED, (0,40), (0, SCREEN_HEIGHT), 5)
+        pygame.draw.line(SCREEN, RED, (SCREEN_WIDTH-2,40), (SCREEN_WIDTH-2,SCREEN_HEIGHT), 5)
+        pygame.draw.line(SCREEN, RED, (0, SCREEN_HEIGHT-2), (SCREEN_WIDTH,SCREEN_HEIGHT-2), 5)
         for x,y in (self.snake_loc):
             
             main_rect = pygame.Rect(x, y, self.size , self.size)
@@ -119,19 +132,19 @@ class Snake:
     def die(self):
         global game_over
         if self.snake_loc[-1][0] >= SCREEN_WIDTH-23 or self.snake_loc[-1][0] <= 2 \
-        or self.snake_loc[-1][1] >= SCREEN_HIGHT-23 or self.snake_loc[-1][1] <= 48:
+        or self.snake_loc[-1][1] >= SCREEN_HEIGHT-23 or self.snake_loc[-1][1] <= 48:
             game_over = True
 
 
 class Food:
     def __init__(self):
         self.size = 20
-        self.loc_x = random.randrange(40, SCREEN_WIDTH-40, 10)
-        self.loc_y = random.randrange(50, SCREEN_HIGHT-40, 10)
+        self.loc_x = random.randrange(40, SCREEN_WIDTH-40, GRID_SIZE)
+        self.loc_y = random.randrange(50, SCREEN_HEIGHT-40, GRID_SIZE)
 
     def update(self):
-        self.loc_x = random.randrange(40, SCREEN_WIDTH-40, 10)
-        self.loc_y = random.randrange(50, SCREEN_HIGHT-40, 10)
+        self.loc_x = random.randrange(40, SCREEN_WIDTH-40, GRID_SIZE)
+        self.loc_y = random.randrange(50, SCREEN_HEIGHT-40, GRID_SIZE)
                                     
     def draw(self, SCREEN):
         SCREEN.blit(FOOD, (self.loc_x, self.loc_y))
@@ -142,7 +155,7 @@ def draw_text(text, font_obj, color, x, y):
     SCREEN.blit(screen_text, screen_rect)
 
 def draw_button(text, x, y, w, h, color, hover_color):
-    """draw_button"""
+    """Draw an interactive button."""
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
     
@@ -160,7 +173,8 @@ def draw_button(text, x, y, w, h, color, hover_color):
     
     return False
 
-def Game(difficulty):
+def game(difficulty):
+    """Run the main game loop."""
     run = True
     player = Snake()
     food = Food()
@@ -174,28 +188,28 @@ def Game(difficulty):
     while run:
         if game_over:
             SCREEN.fill(BLACK)
-            draw_text("GAME OVER!", title_font, RED, SCREEN_WIDTH/2, SCREEN_HIGHT/2-70)
-            draw_text(f"Final Score: {player.snake_score}", font, WHITE, SCREEN_WIDTH/2, SCREEN_HIGHT/2 -30)
+            draw_text("GAME OVER!", title_font, RED, SCREEN_WIDTH/2, SCREEN_HEIGHT/2-70)
+            draw_text(f"Final Score: {player.snake_score}", font, WHITE, SCREEN_WIDTH/2, SCREEN_HEIGHT/2 -30)
 
-            if draw_button("Play Again", SCREEN_WIDTH/2-130, SCREEN_HIGHT/2, 120, 50, GREEN, DARK_GREEN):
-                Game(difficulty)
-            if draw_button("Menu", SCREEN_WIDTH/2+10, SCREEN_HIGHT/2, 120, 50, BLUE, (0, 0, 200)):
-                Game(menu())
+            if draw_button("Play Again", SCREEN_WIDTH/2-130, SCREEN_HEIGHT/2, 120, 50, GREEN, DARK_GREEN):
+                game(difficulty)
+            if draw_button("Menu", SCREEN_WIDTH/2+10, SCREEN_HEIGHT/2, 120, 50, BLUE, (0, 0, 200)):
+                game(menu())
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
                 if event.type == pygame.KEYDOWN:
-                    Game(difficulty)
+                    game(difficulty)
         
         else:
             SCREEN.fill(BLACK)
 
-            userInput = pygame.key.get_pressed()
+            user_input = pygame.key.get_pressed()
             
-            player.update(userInput)
+            player.update(user_input)
             player.draw(SCREEN)
-            player.eat(SCREEN, food)
+            player.eat(food)
             player.die()
 
             food.draw(SCREEN)
@@ -218,12 +232,12 @@ def menu():
         # title
         draw_text(" SNAKE ", title_font, GREEN, SCREEN_WIDTH/2, 150)
         
-        # bottoms
-        if draw_button("Easy", SCREEN_WIDTH/2 -150, SCREEN_HIGHT/2 -70, 100, 50, GREEN, DARK_GREEN):
+        # buttons
+        if draw_button("Easy", SCREEN_WIDTH/2 -150, SCREEN_HEIGHT/2 -70, 100, 50, GREEN, DARK_GREEN):
             return 'easy'
-        if draw_button("Medium", SCREEN_WIDTH/2 -50, SCREEN_HIGHT/2 -70, 100, 50, ORANGE, YELLOW):
+        if draw_button("Medium", SCREEN_WIDTH/2 -50, SCREEN_HEIGHT/2 -70, 100, 50, ORANGE, YELLOW):
             return 'medium'
-        if draw_button("Hard", SCREEN_WIDTH/2 +50, SCREEN_HIGHT/2 -70, 100, 50, RED, (200, 0, 0)):
+        if draw_button("Hard", SCREEN_WIDTH/2 +50, SCREEN_HEIGHT/2 -70, 100, 50, RED, (200, 0, 0)):
             return 'hard'
         
         draw_text("Select Difficulty", font, GRAY, SCREEN_WIDTH/2, 200)
@@ -238,4 +252,4 @@ def menu():
             if event.type == pygame.QUIT:
                 pygame.quit()   
 
-Game(menu())
+game(menu())
