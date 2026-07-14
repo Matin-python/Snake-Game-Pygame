@@ -32,6 +32,7 @@ RED = (255, 0, 0)
 GREEN = (0, 200, 0)
 DARK_GREEN = (0, 150, 0)
 BLUE = (0, 0, 255)
+DARK_BLUE = (0, 0, 200)
 YELLOW = (255, 190, 20)
 ORANGE = (255, 165, 0)
 GRAY = (200, 200, 200)
@@ -198,17 +199,9 @@ def game(difficulty):
 
             if draw_button("Play Again", SCREEN_WIDTH/2-130, SCREEN_HEIGHT/2, 120, 50, GREEN, DARK_GREEN):
                 return difficulty
-            if draw_button("Menu", SCREEN_WIDTH/2+10, SCREEN_HEIGHT/2, 120, 50, BLUE, (0, 0, 200)):
+            if draw_button("Menu", SCREEN_WIDTH/2+10, SCREEN_HEIGHT/2, 120, 50, BLUE, DARK_BLUE):
                 return menu()
             
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    quit_game()
-                
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        return menu()
-                
         
         else:
             screen.fill(BLACK)
@@ -222,18 +215,50 @@ def game(difficulty):
 
             food.draw(screen)
             
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    quit_game()
-                
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quit_game()
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    if game_over:
                         return menu()
+            
+                    else:
+                        action = pause_menu()
+
+                        if action == "menu":
+                            while pygame.mouse.get_pressed()[0]: pygame.event.pump()
+                            return menu()
 
         pygame.display.flip()
         clock.tick(SPEED)
 
+def pause_menu():
+    while True:
+        screen.fill(BLACK)
 
+        draw_text("PAUSED", title_font, YELLOW, SCREEN_WIDTH//2, 180)
+
+        draw_text("Note: The game starts immediately after you pressed resume.", small_font, RED, SCREEN_WIDTH//2, 250)
+
+        if draw_button("Resume", SCREEN_WIDTH//2-150, 300, 120, 50, GREEN, DARK_GREEN):
+            return "resume"
+
+        if draw_button("Main Menu", SCREEN_WIDTH//2+30, 300, 120, 50, BLUE, DARK_BLUE):
+            return "menu"
+
+        draw_text("Press ESC to Resume", small_font, GRAY, SCREEN_WIDTH//2, 390)
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quit_game()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return "resume"
 
 def menu():
     while True:
@@ -261,10 +286,6 @@ def menu():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 quit_game() 
-            
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    quit_game()
 
 difficulty = menu()
 
