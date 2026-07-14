@@ -41,7 +41,7 @@ SCREEN_HEIGHT = 640
 
 GRID_SIZE = 10
 
-SCREEN = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
+screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 
 # difficulty levels
@@ -116,18 +116,18 @@ class Snake:
             self.snake_score += 1
 
             
-    def draw(self, SCREEN):
+    def draw(self, screen):
         draw_text("Score= " + str(self.snake_score), font, RED, 70, 20)
         draw_text("Difficulty= " + str(self.snake_difficulty), font, RED, SCREEN_WIDTH-100, 20)
-        pygame.draw.line(SCREEN, RED, (0,40), (SCREEN_WIDTH,40), 5)
-        pygame.draw.line(SCREEN, RED, (0,40), (0, SCREEN_HEIGHT), 5)
-        pygame.draw.line(SCREEN, RED, (SCREEN_WIDTH-2,40), (SCREEN_WIDTH-2,SCREEN_HEIGHT), 5)
-        pygame.draw.line(SCREEN, RED, (0, SCREEN_HEIGHT-2), (SCREEN_WIDTH,SCREEN_HEIGHT-2), 5)
+        pygame.draw.line(screen, RED, (0,40), (SCREEN_WIDTH,40), 5)
+        pygame.draw.line(screen, RED, (0,40), (0, SCREEN_HEIGHT), 5)
+        pygame.draw.line(screen, RED, (SCREEN_WIDTH-2,40), (SCREEN_WIDTH-2,SCREEN_HEIGHT), 5)
+        pygame.draw.line(screen, RED, (0, SCREEN_HEIGHT-2), (SCREEN_WIDTH,SCREEN_HEIGHT-2), 5)
+        
         for x,y in (self.snake_loc):
-            
             main_rect = pygame.Rect(x, y, self.size , self.size)
-            pygame.draw.rect(SCREEN, GREEN, main_rect)
-            SCREEN.blit(SNAKE_HEAD[self.snake_direction], (x, y))
+            pygame.draw.rect(screen, GREEN, main_rect)
+            screen.blit(SNAKE_HEAD[self.snake_direction], (x, y))
 
     def die(self):
         global game_over
@@ -146,13 +146,13 @@ class Food:
         self.loc_x = random.randrange(40, SCREEN_WIDTH-40, GRID_SIZE)
         self.loc_y = random.randrange(50, SCREEN_HEIGHT-40, GRID_SIZE)
                                     
-    def draw(self, SCREEN):
-        SCREEN.blit(FOOD, (self.loc_x, self.loc_y))
+    def draw(self, screen):
+        screen.blit(FOOD, (self.loc_x, self.loc_y))
 
 def draw_text(text, font_obj, color, x, y):
     screen_text = font_obj.render(text, True, color)
     screen_rect = screen_text.get_rect(center=(x, y))
-    SCREEN.blit(screen_text, screen_rect)
+    screen.blit(screen_text, screen_rect)
 
 def draw_button(text, x, y, w, h, color, hover_color):
     """Draw an interactive button."""
@@ -160,16 +160,16 @@ def draw_button(text, x, y, w, h, color, hover_color):
     click = pygame.mouse.get_pressed()
     
     if x < mouse[0] < x + w and y < mouse[1] < y + h:
-        pygame.draw.rect(SCREEN, hover_color, (x, y, w, h))
+        pygame.draw.rect(screen, hover_color, (x, y, w, h))
         if click[0] == 1:
             return True
     else:
-        pygame.draw.rect(SCREEN, color, (x, y, w, h))
+        pygame.draw.rect(screen, color, (x, y, w, h))
     
     # button text
     text_surf = font.render(text, True, WHITE)
     text_rect = text_surf.get_rect(center=(x + w/2, y + h/2))
-    SCREEN.blit(text_surf, text_rect)
+    screen.blit(text_surf, text_rect)
     
     return False
 
@@ -187,38 +187,36 @@ def game(difficulty):
 
     while run:
         if game_over:
-            SCREEN.fill(BLACK)
+            screen.fill(BLACK)
             draw_text("GAME OVER!", title_font, RED, SCREEN_WIDTH/2, SCREEN_HEIGHT/2-70)
             draw_text(f"Final Score: {player.snake_score}", font, WHITE, SCREEN_WIDTH/2, SCREEN_HEIGHT/2 -30)
 
             if draw_button("Play Again", SCREEN_WIDTH/2-130, SCREEN_HEIGHT/2, 120, 50, GREEN, DARK_GREEN):
-                game(difficulty)
+                return difficulty
             if draw_button("Menu", SCREEN_WIDTH/2+10, SCREEN_HEIGHT/2, 120, 50, BLUE, (0, 0, 200)):
-                game(menu())
+                return menu()
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    run = False
-                if event.type == pygame.KEYDOWN:
-                    game(difficulty)
+                    pygame.quit()
+                    raise SystemExit
         
         else:
-            SCREEN.fill(BLACK)
+            screen.fill(BLACK)
 
             user_input = pygame.key.get_pressed()
             
             player.update(user_input)
-            player.draw(SCREEN)
+            player.draw(screen)
             player.eat(food)
             player.die()
 
-            food.draw(SCREEN)
+            food.draw(screen)
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    run = False
-                # if event.type == pygame.K_ESCAPE:
-                #     return
+                    pygame.quit()
+                    raise SystemExit
 
         pygame.display.flip()
         clock.tick(SPEED)
@@ -227,7 +225,7 @@ def game(difficulty):
 
 def menu():
     while True:
-        SCREEN.fill(BLACK)
+        screen.fill(BLACK)
         
         # title
         draw_text(" SNAKE ", title_font, GREEN, SCREEN_WIDTH/2, 150)
@@ -250,6 +248,10 @@ def menu():
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()   
+                pygame.quit()  
+                raise SystemExit 
 
-game(menu())
+difficulty = menu()
+
+while True:
+    difficulty = game(difficulty)
