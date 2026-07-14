@@ -46,45 +46,42 @@ DIRECTIONS = {
 }
 
 class Snake:
-    size = 20
-    snake_loc = []
-    snake_len = 1
-    snake_score = 0
-    snake_direction = 1
-    snake_difficulty = 'easy'
+    def __init__(self):
+        self.size = 20
 
-    loc_x = SCREEN_WIDTH/2
-    loc_y = SCREEN_HIGHT/2
+        self.snake_loc = []
+        self.snake_len = 1
+        self.snake_score = 0
 
-    x_change = 0
-    y_change = 0
+        self.snake_direction = DIRECTIONS["RIGHT"]
+        self.snake_difficulty = 'easy'
 
-    
-    # def __int__(self):
-    #     self.len = 2
-        # self.loc_x = screen_width/2
-        # self.loc_y = screen_hight/2
+        self.loc_x = SCREEN_WIDTH // 2
+        self.loc_y = SCREEN_HIGHT // 2
+
+        self.x_change = 0
+        self.y_change = 0
 
     def update(self, userInput):
         if userInput[pygame.K_w] or userInput[pygame.K_UP]:
             self.y_change = -10
             self.x_change = 0
-            self.snake_direction = 0
+            self.snake_direction = DIRECTIONS["UP"]
 
         if userInput[pygame.K_a] or userInput[pygame.K_LEFT]:
             self.x_change = -10
             self.y_change = 0
-            self.snake_direction = 3
+            self.snake_direction = DIRECTIONS["LEFT"]
 
         if userInput[pygame.K_s] or userInput[pygame.K_DOWN]:
             self.y_change = 10
             self.x_change = 0
-            self.snake_direction = 2
+            self.snake_direction = DIRECTIONS["DOWN"]
 
         if userInput[pygame.K_d] or userInput[pygame.K_RIGHT]:
             self.x_change = 10
             self.y_change = 0
-            self.snake_direction = 1
+            self.snake_direction = DIRECTIONS["RIGHT"]
             
         self.loc_x += self.x_change
         self.loc_y += self.y_change
@@ -99,14 +96,14 @@ class Snake:
         if len(self.snake_loc)>self.snake_len:
             del self.snake_loc[0]
 
-    def eat(self, SCREEN):
+    def eat(self, SCREEN, food):
         snake_rect = pygame.Rect(self.snake_loc[-1][0], self.snake_loc[-1][1], self.size , self.size)
-        rand_food = pygame.Rect(Food.loc_x, Food.loc_y, Food.size, Food.size)
+        rand_food = pygame.Rect(food.loc_x, food.loc_y, food.size, food.size)
         if snake_rect.colliderect(rand_food):
             pygame.draw.rect(SCREEN, (255,20,20), snake_rect)
-            Food().update()
-            Snake.snake_len += 1
-            Snake.snake_score += 1
+            food.update()
+            self.snake_len += 1
+            self.snake_score += 1
 
             
     def draw(self, SCREEN):
@@ -130,16 +127,14 @@ class Snake:
 
 
 class Food:
-    size = 20
-    loc_x = random.randint(40, SCREEN_WIDTH-40)
-    loc_y = random.randint(40, SCREEN_HIGHT-40)
-    # def __int__(self):
-    #     self.loc_x = random.randint(40, screen_width-40)
-    #     self.loc_y = random.randint(40, screen_hight-40)
+    def __init__(self):
+        self.size = 20
+        self.loc_x = random.randrange(40, SCREEN_WIDTH-40, 10)
+        self.loc_y = random.randrange(50, SCREEN_HIGHT-40, 10)
 
     def update(self):
-        Food.loc_x = random.randint(40, SCREEN_WIDTH-40)
-        Food.loc_y = random.randint(40, SCREEN_HIGHT-40)
+        self.loc_x = random.randrange(40, SCREEN_WIDTH-40, 10)
+        self.loc_y = random.randrange(50, SCREEN_HIGHT-40, 10)
                                     
     def draw(self, SCREEN):
         SCREEN.blit(FOOD, (self.loc_x, self.loc_y))
@@ -169,24 +164,21 @@ def draw_button(text, x, y, w, h, color, hover_color):
     return False
 
 def Game(difficulty):
-    SPEED = SPEEDS[difficulty]
-    Snake.snake_difficulty = difficulty
-    global game_over
-    game_over = False
-
     run = True
     player = Snake()
     food = Food()
 
-    Snake.snake_len = 1
-    Snake.snake_loc = []
-    Snake.snake_score = 0
+    SPEED = SPEEDS[difficulty]
+    player.snake_difficulty = difficulty
+    global game_over
+    game_over = False
+
 
     while run:
         if game_over:
             SCREEN.fill(BLACK)
             draw_text("GAME OVER!", title_font, RED, SCREEN_WIDTH/2, SCREEN_HIGHT/2-70)
-            draw_text(f"Final Score: {Snake.snake_score}", font, WHITE, SCREEN_WIDTH/2, SCREEN_HIGHT/2 -30)
+            draw_text(f"Final Score: {player.snake_score}", font, WHITE, SCREEN_WIDTH/2, SCREEN_HIGHT/2 -30)
 
             if draw_button("Play Again", SCREEN_WIDTH/2-130, SCREEN_HIGHT/2, 120, 50, GREEN, DARK_GREEN):
                 Game(difficulty)
@@ -206,7 +198,7 @@ def Game(difficulty):
             
             player.update(userInput)
             player.draw(SCREEN)
-            player.eat(SCREEN)
+            player.eat(SCREEN, food)
             player.die()
 
             food.draw(SCREEN)
@@ -226,10 +218,10 @@ def menu():
     while True:
         SCREEN.fill(BLACK)
         
-        # عنوان
+        # title
         draw_text(" SNAKE ", title_font, GREEN, SCREEN_WIDTH/2, 150)
         
-        # دکمه‌ها
+        # bottoms
         if draw_button("Easy", SCREEN_WIDTH/2 -150, SCREEN_HIGHT/2 -70, 100, 50, GREEN, DARK_GREEN):
             return 'easy'
         if draw_button("Medium", SCREEN_WIDTH/2 -50, SCREEN_HIGHT/2 -70, 100, 50, ORANGE, YELLOW):
@@ -239,7 +231,7 @@ def menu():
         
         draw_text("Select Difficulty", font, GRAY, SCREEN_WIDTH/2, 200)
         
-        # راهنما
+        # guide
         draw_text("Use Arrow Or WASD Keys to Move", small_font, GRAY, SCREEN_WIDTH/2, 350)
         draw_text("Press ESC to Return to Menu", small_font, GRAY, SCREEN_WIDTH/2, 380)
         
