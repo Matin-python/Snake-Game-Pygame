@@ -16,6 +16,7 @@ title_font = pygame.font.SysFont('arial', 50, bold=True)
 font = pygame.font.SysFont('arial', 25)
 small_font = pygame.font.SysFont('arial', 18)
 
+# init colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
@@ -32,7 +33,7 @@ SCREEN_HIGHT = 640
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HIGHT))
 clock = pygame.time.Clock()
 
-# سطوح دشواری
+# difficulty levels
 SPEEDS = {
     'easy': 10,
     'medium': 20,
@@ -87,13 +88,9 @@ class Snake:
         self.loc_y += self.y_change
 
         
+        self.snake_loc.append([self.loc_x, self.loc_y])
 
-        snake_Head = []
-        snake_Head.append(self.loc_x)
-        snake_Head.append(self.loc_y)
-        self.snake_loc.append(snake_Head)
-
-        if len(self.snake_loc)>self.snake_len:
+        if len(self.snake_loc) > self.snake_len:
             del self.snake_loc[0]
 
     def eat(self, SCREEN, food):
@@ -145,7 +142,7 @@ def draw_text(text, font_obj, color, x, y):
     SCREEN.blit(screen_text, screen_rect)
 
 def draw_button(text, x, y, w, h, color, hover_color):
-    """رسم دکمه"""
+    """draw_button"""
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
     
@@ -156,7 +153,7 @@ def draw_button(text, x, y, w, h, color, hover_color):
     else:
         pygame.draw.rect(SCREEN, color, (x, y, w, h))
     
-    # متن دکمه
+    # button text
     text_surf = font.render(text, True, WHITE)
     text_rect = text_surf.get_rect(center=(x + w/2, y + h/2))
     SCREEN.blit(text_surf, text_rect)
