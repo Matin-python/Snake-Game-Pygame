@@ -57,6 +57,11 @@ DIRECTIONS = {
     'LEFT': 3
 }
 
+def quit_game():
+    pygame.quit()
+    raise SystemExit
+
+
 class Snake:
     """Represents the player-controlled snake."""
     def __init__(self):
@@ -198,8 +203,12 @@ def game(difficulty):
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()
-                    raise SystemExit
+                    quit_game()
+                
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        return menu()
+                
         
         else:
             screen.fill(BLACK)
@@ -215,8 +224,11 @@ def game(difficulty):
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()
-                    raise SystemExit
+                    quit_game()
+                
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        return menu()
 
         pygame.display.flip()
         clock.tick(SPEED)
@@ -248,8 +260,11 @@ def menu():
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()  
-                raise SystemExit 
+                quit_game() 
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    quit_game()
 
 difficulty = menu()
 
