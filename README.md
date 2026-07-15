@@ -46,6 +46,7 @@ Snake-Game-Pygame/
 ├── snake_head_D.jpg
 ├── snake_head_L.jpg
 ├── food.jpg
+├── snake.ico
 ├── screenshots/
 │   ├── menu.png
 │   ├── gameplay.png
