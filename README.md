@@ -134,8 +134,9 @@ python snake.py
 ![Game Over](screenshots/gameover.png)
 
 
+---
 
-## Creating an Executable (.exe)
+## Creating an Executable (.exe) (Optional)
 
 You can package the game into a standalone Windows executable using **PyInstaller**.
 
@@ -171,6 +172,8 @@ dist/
 ```
 
 You can run `snake.exe` without installing Python.
+
+---
 
 
 ## Concepts Demonstrated
