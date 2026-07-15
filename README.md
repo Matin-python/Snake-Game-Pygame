@@ -133,6 +133,45 @@ python snake.py
 ![Game Over](screenshots/gameover.png)
 
 
+
+## Creating an Executable (.exe)
+
+You can package the game into a standalone Windows executable using **PyInstaller**.
+
+### 1. Install PyInstaller
+
+```bash
+pip install pyinstaller
+```
+
+### 2. Build the Executable
+
+Run the following command from the project directory:
+
+```bash
+pyinstaller --onefile --windowed ^
+--add-data "food.jpg;." ^
+--add-data "snake_head_U.jpg;." ^
+--add-data "snake_head_R.jpg;." ^
+--add-data "snake_head_D.jpg;." ^
+--add-data "snake_head_L.jpg;." ^
+snake.py
+```
+
+> **Note:** On Linux and macOS, replace the semicolon (`;`) in `--add-data` with a colon (`:`).
+
+### 3. Locate the Executable
+
+After the build completes, the executable will be available in the `dist` folder:
+
+```text
+dist/
+└── snake.exe
+```
+
+You can run `snake.exe` without installing Python.
+
+
 ## Concepts Demonstrated
 
 - Object-Oriented Programming (OOP)
